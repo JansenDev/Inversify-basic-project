@@ -90,17 +90,29 @@ function getProducts() {
   return diccionario;
 }
 
-const test = { size: 0 };
+const test = { length: 0 };
 
 // const hashProducts: myPartial<TDictionary<IProduct[]>> = getProducts();
-const hashProducts: myPartial<TDictionary<IProduct[]>> = getProducts();
+const hashProducts: myRecord<string, []> = getProducts();
+//^ agrega objecto com key
+const hashProducts2: myPartial2<typeof test, IProduct[]> = getProducts();
 
-console.log(hashProducts.length);
-console.log(hashProducts.hasOwnProperty("1"));
+// console.log(hashProducts["1"]);
+// console.log(hashProducts.hasOwnProperty("1"));
+console.log(hashProducts2.hasOwnProperty("1"));
+console.log(hashProducts2);
 
-type myPartial<I> = {
-  [K in keyof I]?: I[K];
+type myPartial2<O, I> = {
+  [K in keyof O]-?: I;
 };
+// & {
+//   length: number;
+// };
+
+type myRecord<T extends keyof any, I> = {
+  [P in T]: I;
+};
+
 
 interface IProduct {
   id_products: number;
@@ -113,7 +125,7 @@ interface IProduct {
   categoria: number;
 }
 type TDictionary<T> = {
-  // length: number;
+  length: number;
 } & {
   [key: string]: T;
 };
