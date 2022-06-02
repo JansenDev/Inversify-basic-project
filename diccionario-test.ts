@@ -1,4 +1,4 @@
-const products = [
+const products: IProduct[] = [
   {
     id_products: 1,
     descripcion: "MILK",
@@ -58,13 +58,22 @@ const products = [
     data3: "",
     data4: "",
     categoria: 3
+  },
+  {
+    id_products: 3,
+    descripcion: "chele",
+    price: 25.6,
+    data1: "",
+    data2: "",
+    data3: "",
+    data4: "",
+    categoria: 4
   }
 ];
 
 function getProducts() {
   const get_products = products;
-  const diccionario: myInterface = { size: 0 };
-  const IOptions = [];
+  const diccionario: any = { length: 0 };
 
   for (let index = 0; index < get_products.length; index++) {
     const product = get_products[index];
@@ -72,26 +81,39 @@ function getProducts() {
     if (!diccionario.hasOwnProperty(product.categoria)) {
       diccionario[product.categoria] = [];
       diccionario[product.categoria].push(product);
-      IOptions.push(product.categoria);
+      diccionario.length++;
     } else {
       diccionario[product.categoria].push(product);
     }
   }
-  console.log(IOptions);
 
   return diccionario;
 }
-// getProducts();
-console.log(getProducts());
 
-export type IDiccionario = {
-  size: number;
-} & {
-  [key: string]: any;
+const test = { size: 0 };
+
+// const hashProducts: myPartial<TDictionary<IProduct[]>> = getProducts();
+const hashProducts: myPartial<TDictionary<IProduct[]>> = getProducts();
+
+console.log(hashProducts.length);
+console.log(hashProducts.hasOwnProperty("1"));
+
+type myPartial<I> = {
+  [K in keyof I]?: I[K];
 };
 
-export type Implements<T, R extends T> = R;
-export type myInterface = Implements<
-  { [key: string]: unknown },
-  { size: number }
->;
+interface IProduct {
+  id_products: number;
+  descripcion: string;
+  price: number;
+  data1: string;
+  data2: string;
+  data3: string;
+  data4: string;
+  categoria: number;
+}
+type TDictionary<T> = {
+  // length: number;
+} & {
+  [key: string]: T;
+};
