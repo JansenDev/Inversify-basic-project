@@ -71,48 +71,59 @@ const products: IProduct[] = [
   }
 ];
 
-function getProducts() {
+let dict_memory: TDictionary<IProduct[]> = {} as TDictionary<IProduct[]>;
+
+function groupingProductsBy(key: keyof IProduct): TDictionary<IProduct[]> {
   const get_products = products;
-  const diccionario: any = { length: 0 };
+  const dictionary: any = {
+    length: 0,
+    popp: (key: keyof IProduct) => {
+      // delete dict_memory[key];
+      console.log(dict_memory);
+      console.log(key);
+
+      return dict_memory;
+    }
+  };
 
   for (let index = 0; index < get_products.length; index++) {
     const product = get_products[index];
 
-    if (!diccionario.hasOwnProperty(product.categoria)) {
-      diccionario[product.categoria] = [];
-      diccionario[product.categoria].push(product);
-      diccionario.length++;
-    } else {
-      diccionario[product.categoria].push(product);
+    //^ Si el valor que se convertira en key es null o vacio
+    if (product[key] !== null || product[key] !== "") {
+      //^ Si no existe propiedad la crea
+      if (!dictionary.hasOwnProperty(product[key])) {
+        dictionary[product[key]] = [];
+        dictionary[product[key]].push(product);
+        dictionary.length++;
+      } else {
+        dictionary[product[key]].push(product);
+      }
     }
   }
 
-  return diccionario;
+  return dictionary;
 }
+groupingProductsBy('categoria')
 
-const test = { length: 0 };
+const popp = (key: keyof IProduct) => {
+  // delete dict_memory[key];
+  console.log(dict_memory);
+  console.log(key);
 
-// const hashProducts: myPartial<TDictionary<IProduct[]>> = getProducts();
-const hashProducts: myRecord<string, []> = getProducts();
-//^ agrega objecto com key
-const hashProducts2: myPartial2<typeof test, IProduct[]> = getProducts();
-
-// console.log(hashProducts["1"]);
-// console.log(hashProducts.hasOwnProperty("1"));
-console.log(hashProducts2.hasOwnProperty("1"));
-console.log(hashProducts2);
-
-type myPartial2<O, I> = {
-  [K in keyof O]-?: I;
-};
-// & {
-//   length: number;
-// };
-
-type myRecord<T extends keyof any, I> = {
-  [P in T]: I;
+  return dict_memory;
 };
 
+// Probando
+
+const productsDict = groupingProductsBy("id_products");
+
+// console.log(productsDict.hasOwnProperty("1"));
+// console.log(productsDict.length);
+console.log(productsDict.popp("3"));
+// console.log(productsDict);
+// const get_product_cat_1 = productsDict["1"];
+// console.log(productsDict);
 
 interface IProduct {
   id_products: number;
@@ -124,8 +135,10 @@ interface IProduct {
   data4: string;
   categoria: number;
 }
-type TDictionary<T> = {
+
+export type TDictionary<T> = {
   length: number;
+  popp: Function;
 } & {
   [key: string]: T;
 };
