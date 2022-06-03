@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
-// import { Pool, PoolConfig } from "pg";
-
+import { Pool, PoolConfig } from "pg";
 @injectable()
 export class DependencyA {
   private readonly name: string = "dependencyA";
@@ -19,21 +18,15 @@ export class DependencyB {
   }
 }
 
-// @injectable()
-// export class ConnectionPool {
-//   constructor() {}
+const config: PoolConfig = {
+  user: "postgres",
+  host: "localhost",
+  database: "inversify",
+  password: "12345",
+  port: 5432,
+  statement_timeout: 2000
+};
 
-//   public connection() {
-//     const config: PoolConfig = {
-//       user: "postgres",
-//       host: "postgres",
-//       database: "inversify",
-//       password: "12345",
-//       port: 5432,
-//       statement_timeout: 200
-//     };
+const pool = new Pool(config);
 
-//     const pool = new Pool(config);
-//     return pool;
-//   }
-// }
+export { pool, Pool };
