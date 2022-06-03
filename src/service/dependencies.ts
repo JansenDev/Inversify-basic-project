@@ -30,3 +30,18 @@ const config: PoolConfig = {
 const pool = new Pool(config);
 
 export { pool, Pool };
+
+@injectable()
+export class ClaseConnect {
+  connect() {
+    const config: PoolConfig = {
+      user: "postgres",
+      host: "localhost",
+      database: "inversify",
+      password: "12345",
+      port: 5432,
+      statement_timeout: 2000
+    };
+    return new Pool(config);
+  }
+}

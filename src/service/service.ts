@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { Pool } from "pg";
-import { DependencyA, DependencyB } from "./dependencies";
+import { Pool, QueryResult } from "pg";
+import { DependencyA, DependencyB, ClaseConnect } from "./dependencies";
 import { pool } from "./dependencies";
 
 @injectable()
@@ -23,14 +23,21 @@ export class Service {
 
 @injectable()
 export class myService {
-  protected pool: Pool;
-  constructor(@inject(Pool) pool: Pool) {
-    this.pool = pool;
+  private pool: Pool;
+  constructor(@inject(ClaseConnect) connection: ClaseConnect) {
+    this.pool = connection.connect();
   }
 
   async testConnection() {
-    const data = await this.pool.query("SELECT * FROM docker;");
-    await pool.end();
+    const data: QueryResult<IDocker> = await this.pool.query(
+      "SELECT * FROM docker;"
+    );
+    this.pool.end();
     return data.rows;
   }
+}
+
+interface IDocker {
+  id_docker: number;
+  title: string;
 }
